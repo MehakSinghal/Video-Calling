@@ -1,3 +1,4 @@
+import 'package:agora_flutter_quickstart/src/pages/splash.dart';
 import 'package:flutter/material.dart';
 
 import './src/pages/index.dart';
@@ -9,11 +10,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: IndexPage(),
+      routes: {
+        IndexPage.routeName: (ctx)=> IndexPage(),
+        Splash.routeName : (ctx)=> Splash(),
+      },
     );
   }
 }

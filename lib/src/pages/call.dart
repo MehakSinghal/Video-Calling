@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:agora_flutter_quickstart/src/pages/index.dart';
+import 'package:agora_flutter_quickstart/src/pages/splash.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 
@@ -39,6 +41,7 @@ class _CallPageState extends State<CallPage> {
     super.initState();
     // initialize agora sdk
     initialize();
+    startCounter(context);
   }
 
   Future<void> initialize() async {
@@ -289,7 +292,7 @@ class _CallPageState extends State<CallPage> {
   }
 
   void _onCallEnd(BuildContext context) {
-    Navigator.pop(context);
+    Navigator.of(context).pushReplacementNamed(Splash.routeName);
   }
 
   void _onToggleMute() {
@@ -303,22 +306,82 @@ class _CallPageState extends State<CallPage> {
     AgoraRtcEngine.switchCamera();
   }
 
+  int counter = 15;
+  Timer timer;
+  int x=1;
+  void startCounter(BuildContext context) {
+    counter = 15;
+    if (timer != null) {
+      timer.cancel();
+    }
+    //x=0;
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (counter > 0 && _users.isEmpty) {
+          counter--;
+        } else {
+          if(_users.isEmpty){
+            timer.cancel();
+            showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: Text('SORRY'),
+                  content: Text('There is no one to connect. Try again later.'),
+                  actions: [
+                    FlatButton(child: Text('Okay'),onPressed: (){
+                     Navigator.of(context).pushReplacementNamed(IndexPage.routeName);
+                    },),
+                  ],
+                ));
+          }
+          else{
+            timer.cancel();
+            x=0;
+          }
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Agora Flutter QuickStart'),
-      ),
-      backgroundColor: Colors.black,
-      body: Center(
-        child: Stack(
-          children: <Widget>[
-            _viewRows(),
-            _panel(),
-            _toolbar(),
-          ],
+    if (_users.isEmpty && x==1) {
+      //startCounter(context);
+      return Scaffold(
+          appBar: AppBar(
+            title: Text('Video Call'),
+          ),
+          body:  Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.timer,size: 70,),
+              SizedBox(height: 15,),
+              Center(
+                child: Text(counter.toString(),style: TextStyle(fontSize: 30),),
+              ),
+              Text('Please Wait....',style: TextStyle(fontSize: 25),)
+            ],
+          ),);
+    }
+    /*else if(_users.isEmpty && x==0){
+      Navigator.of(context).pushReplacementNamed(Splash.routeName);
+    }*/
+    else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Agora Flutter QuickStart'),
         ),
-      ),
-    );
+        backgroundColor: Colors.black,
+        body: Center(
+          child: Stack(
+            children: <Widget>[
+              _viewRows(),
+              // _panel(),
+              _toolbar(),
+            ],
+          ),
+        ),
+      );
+    }
   }
 }

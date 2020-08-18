@@ -1,12 +1,18 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:firebase_admob/firebase_admob.dart';
+import 'package:random_string/random_string.dart';
 
 import './call.dart';
 
+const String testDevice= 'MOBILE_ID';
+
 class IndexPage extends StatefulWidget {
+  static const routeName= '/index';
   @override
   State<StatefulWidget> createState() => IndexState();
 }
@@ -20,18 +26,42 @@ class IndexState extends State<IndexPage> {
 
   ClientRole _role = ClientRole.Broadcaster;
 
+
+  static const MobileAdTargetingInfo mobileAdTargetingInfo = MobileAdTargetingInfo(
+    testDevices: testDevice!=null ? <String>[testDevice] : null,
+    nonPersonalizedAds: true,
+    keywords: <String>['game','mario'],
+  );
+  BannerAd _bannerAd;
+
+  BannerAd createBannerAd(){
+    return BannerAd(
+      adUnitId: BannerAd.testAdUnitId,
+      size: AdSize.banner,
+      targetingInfo: mobileAdTargetingInfo,
+      listener: (MobileAdEvent event){
+        print('Banner Ad $event');
+      }
+    );
+  }
+  @override
+  void initState() {
+    FirebaseAdMob.instance.initialize(appId: BannerAd.testAdUnitId);
+    _bannerAd = createBannerAd()..load()..show();
+    super.initState();
+  }
   @override
   void dispose() {
     // dispose input controller
     _channelController.dispose();
+    _bannerAd.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agora Flutter QuickStart'),
+        title: Text('Home'),
       ),
       body: Center(
         child: Container(
@@ -39,7 +69,7 @@ class IndexState extends State<IndexPage> {
           height: 400,
           child: Column(
             children: <Widget>[
-              Row(
+              /*Row(
                 children: <Widget>[
                   Expanded(
                       child: TextField(
@@ -54,8 +84,8 @@ class IndexState extends State<IndexPage> {
                     ),
                   ))
                 ],
-              ),
-              Column(
+              ),*/
+              /*Column(
                 children: [
                   ListTile(
                     title: Text(ClientRole.Broadcaster.toString()),
@@ -82,15 +112,16 @@ class IndexState extends State<IndexPage> {
                     ),
                   )
                 ],
-              ),
+              ),*/
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Row(
                   children: <Widget>[
                     Expanded(
                       child: RaisedButton(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         onPressed: onJoin,
-                        child: Text('Join'),
+                        child: Text('Get Started'),
                         color: Colors.blueAccent,
                         textColor: Colors.white,
                       ),
@@ -107,25 +138,27 @@ class IndexState extends State<IndexPage> {
 
   Future<void> onJoin() async {
     // update input validation
-    setState(() {
+   /* setState(() {
       _channelController.text.isEmpty
           ? _validateError = true
           : _validateError = false;
-    });
-    if (_channelController.text.isNotEmpty) {
-      // await for camera and mic permissions before pushing video page
-      await _handleCameraAndMic();
-      // push video page with given channel name
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CallPage(
-            channelName: _channelController.text,
-            role: _role,
-          ),
+    });*/
+   final channelName= 'Hello';
+    // await for camera and mic permissions before pushing video page
+    await _handleCameraAndMic();
+    // push video page with given channel name
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CallPage(
+          channelName:channelName,
+          role: _role,
         ),
-      );
-    }
+      ),
+    );
+   /* if (_channelController.text.isNotEmpty) {
+
+    }*/
   }
 
   Future<void> _handleCameraAndMic() async {
