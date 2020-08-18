@@ -352,7 +352,7 @@ class _CallPageState extends State<CallPage> {
       //startCounter(context);
       return Scaffold(
           appBar: AppBar(
-            title: Text('Agora Flutter QuickStart'),
+            title: Text('Video Call going on'),
           ),
           body:  Column(
             mainAxisAlignment: MainAxisAlignment.center,
