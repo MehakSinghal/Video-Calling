@@ -329,7 +329,10 @@ class _CallPageState extends State<CallPage> {
                   content: Text('There is no one to connect. Try again later.'),
                   actions: [
                     FlatButton(child: Text('Okay'),onPressed: (){
-                     Navigator.of(context).pushReplacementNamed(IndexPage.routeName);
+                      //Navigator.push(ctx, MaterialPageRoute(builder: (context) => IndexPage()));
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                      //Navigator.of(context).pushReplacementNamed(IndexPage.routeName);
                     },),
                   ],
                 ));
@@ -349,7 +352,7 @@ class _CallPageState extends State<CallPage> {
       //startCounter(context);
       return Scaffold(
           appBar: AppBar(
-            title: Text('Video Call'),
+            title: Text('Agora Flutter QuickStart'),
           ),
           body:  Column(
             mainAxisAlignment: MainAxisAlignment.center,

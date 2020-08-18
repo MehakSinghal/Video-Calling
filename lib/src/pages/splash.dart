@@ -20,7 +20,8 @@ class Splash extends StatelessWidget {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           onPressed: (){
-              Navigator.of(context).pushReplacementNamed(IndexPage.routeName);
+              Navigator.of(context).pop();
+              //Navigator.of(context).pushReplacementNamed(IndexPage.routeName);
           },
           ),
         ],
